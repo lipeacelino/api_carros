@@ -1,8 +1,11 @@
 package com.example.carros.api;
 
+import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,23 +26,44 @@ public class CarroController {
 	private CarroService service;
 	
 	@GetMapping
-	public Iterable<Carro> getCarros() {
-		return service.getCarros();
+	public ResponseEntity<Iterable<Carro>> getCarros() {
+		return ResponseEntity.ok(service.getCarros());
 	}
 
 	@GetMapping("/{id}")
-	public Optional<Carro> getCarroById(@PathVariable("id") Long id) {
-		return service.getCarroById(id);
+	public ResponseEntity<Optional<Carro>> getCarroById(@PathVariable("id") Long id) {
+		Optional<Carro> carro = service.getCarroById(id);
+		
+		if(carro.isPresent()) {
+			return ResponseEntity.ok(carro);
+		} 
+		else {
+			return ResponseEntity.notFound().build();
+		}
 	}
 	
 	@GetMapping("/tipo/{tipo}")
-	public Iterable<Carro> getCarroByTipo(@PathVariable("tipo") String tipo) {
-		return service.getCarroByTipo(tipo);
+	public ResponseEntity<List<Carro>> getCarroByTipo(@PathVariable("tipo") String tipo) {
+		List<Carro> carros = service.getCarroByTipo(tipo);
+		
+		if(carros.isEmpty()) {
+			return ResponseEntity.noContent().build();
+		} else {
+			return ResponseEntity.ok(carros);
+		}
 	}
 	
 	@PostMapping
-	public void addCarro(@RequestBody Carro carro) {
-		service.addCarro(carro);
+	public ResponseEntity<Carro> addCarro(@RequestBody Carro carro) {
+		
+		 //o ideal seria colocar "not null" nos atributos no bd 
+		 if (carro.getNome().isBlank() || carro.getTipo().isBlank()) {
+			 return ResponseEntity.badRequest().build();
+		 }
+		 else {
+			 service.addCarro(carro);
+			 return ResponseEntity.created(URI.create("http://localhost:8080/api/v1/carros/" + carro.getId())).build();
+		 }
 	}
 	
 	@PutMapping("/{id}")

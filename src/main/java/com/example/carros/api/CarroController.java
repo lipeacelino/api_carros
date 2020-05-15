@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -75,8 +76,12 @@ public class CarroController {
 	}
 	
 	@PutMapping("/{id}")
-	public void editCarro(@PathVariable Long id, @RequestBody Carro carro) {
-		service.editCarro(id, carro);
+	public ResponseEntity editCarro(@PathVariable Long id, @RequestBody Carro carro) {
+		Carro c = service.editCarro(id, carro);
+		if (c == null) {
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok(c);
 	}
 	
 	@DeleteMapping("/{id}")

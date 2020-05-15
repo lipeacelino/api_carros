@@ -38,7 +38,9 @@ public class CarroService {
 	}
 
 	// futuramente é bom trocar esse método por uma lambda + map
-	public void editCarro(Long id, Carro carro) {
+	public Carro editCarro(Long id, Carro carro) {
+		
+		Assert.notNull(id, "Não foi possível atualizar o registro.");
 		
 		//busca de carro no banco de dados 
 		Optional<Carro> carroOptional = repository.findById(id);
@@ -51,7 +53,9 @@ public class CarroService {
 			carroBd.setTipo(carro.getTipo());
 		
 			//salvando carro atualizado no bd
-			repository.save(carroBd);
+			return repository.save(carroBd);
+		} else {
+			return null;
 		}
 		
 	}

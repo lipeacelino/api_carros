@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.example.carros.domain.Carro;
 import com.example.carros.service.CarroService;
@@ -22,16 +23,23 @@ import com.example.carros.service.CarroService;
 @RequestMapping("/api/v1/carros")
 public class CarroController {
 	
+	private URI getUri(Long id) {
+		return ServletUriComponentsBuilder.fromCurrentRequest()
+				.path("/{id}")
+				.buildAndExpand(id)
+				.toUri();
+	}
+	
 	@Autowired
 	private CarroService service;
 	
 	@GetMapping
-	public ResponseEntity<Iterable<Carro>> getCarros() {
+	public ResponseEntity getCarros() {
 		return ResponseEntity.ok(service.getCarros());
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Optional<Carro>> getCarroById(@PathVariable("id") Long id) {
+	public ResponseEntity getCarroById(@PathVariable("id") Long id) {
 		Optional<Carro> carro = service.getCarroById(id);
 		
 		if(carro.isPresent()) {
@@ -43,7 +51,7 @@ public class CarroController {
 	}
 	
 	@GetMapping("/tipo/{tipo}")
-	public ResponseEntity<List<Carro>> getCarroByTipo(@PathVariable("tipo") String tipo) {
+	public ResponseEntity getCarroByTipo(@PathVariable("tipo") String tipo) {
 		List<Carro> carros = service.getCarroByTipo(tipo);
 		
 		if(carros.isEmpty()) {
@@ -54,16 +62,16 @@ public class CarroController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<Carro> addCarro(@RequestBody Carro carro) {
+	public ResponseEntity addCarro(@RequestBody Carro carro) {
 		
-		 //o ideal seria colocar "not null" nos atributos no bd 
-		 if (carro.getNome().isBlank() || carro.getTipo().isBlank()) {
-			 return ResponseEntity.badRequest().build();
-		 }
-		 else {
-			 service.addCarro(carro);
-			 return ResponseEntity.created(URI.create("http://localhost:8080/api/v1/carros/" + carro.getId())).build();
-		 }
+		try {
+			service.addCarro(carro);
+			URI location = this.getUri(carro.getId());
+			return ResponseEntity.created(location).build();
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().build();
+		}
+		
 	}
 	
 	@PutMapping("/{id}")

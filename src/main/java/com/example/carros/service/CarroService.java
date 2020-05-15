@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import com.example.carros.domain.Carro;
 import com.example.carros.domain.CarroRepository;
@@ -32,6 +33,7 @@ public class CarroService {
 	}
 
 	public void addCarro(Carro carro) {
+		Assert.isNull(carro.getId(), "Não foi possível inserir o registro.");
 		repository.save(carro);
 	}
 

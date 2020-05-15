@@ -12,10 +12,10 @@ import com.example.carros.domain.CarroRepository;
 
 @Service
 public class CarroService {
-	
+
 	@Autowired
 	private CarroRepository repository;
-	
+
 	public Iterable<Carro> getCarros() {
 		return repository.findAll();
 	}
@@ -24,8 +24,12 @@ public class CarroService {
 		return repository.findById(id);
 	}
 
-	public void deleteCarro(Long id) {
-		repository.deleteById(id);
+	public boolean deleteCarro(Long id) {
+		if (getCarroById(id).isPresent()) {
+			repository.deleteById(id);
+			return true;
+		}
+		return false;
 	}
 
 	public List<Carro> getCarroByTipo(String tipo) {
@@ -39,24 +43,24 @@ public class CarroService {
 
 	// futuramente é bom trocar esse método por uma lambda + map
 	public Carro editCarro(Long id, Carro carro) {
-		
+
 		Assert.notNull(id, "Não foi possível atualizar o registro.");
-		
-		//busca de carro no banco de dados 
+
+		// busca de carro no banco de dados
 		Optional<Carro> carroOptional = repository.findById(id);
-	
+
 		if (carroOptional.isPresent()) {
 			Carro carroBd = carroOptional.get();
-			
-			//copiando as propriedades para o carro do bd
+
+			// copiando as propriedades para o carro do bd
 			carroBd.setNome(carro.getNome());
 			carroBd.setTipo(carro.getTipo());
-		
-			//salvando carro atualizado no bd
+
+			// salvando carro atualizado no bd
 			return repository.save(carroBd);
 		} else {
 			return null;
 		}
-		
+
 	}
 }

@@ -22,17 +22,15 @@ import com.example.carros.service.CarroService;
 @RestController
 @RequestMapping("/api/v1/carros")
 public class CarroController {
-	
+
+	// recebe o id de um carro e retorna a url do carro em questão
 	private URI getUri(Long id) {
-		return ServletUriComponentsBuilder.fromCurrentRequest()
-				.path("/{id}")
-				.buildAndExpand(id)
-				.toUri();
+		return ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(id).toUri();
 	}
-	
+
 	@Autowired
 	private CarroService service;
-	
+
 	@GetMapping
 	public ResponseEntity getCarros() {
 		return ResponseEntity.ok(service.getCarros());
@@ -41,29 +39,28 @@ public class CarroController {
 	@GetMapping("/{id}")
 	public ResponseEntity getCarroById(@PathVariable("id") Long id) {
 		Optional<Carro> carro = service.getCarroById(id);
-		
-		if(carro.isPresent()) {
+
+		if (carro.isPresent()) {
 			return ResponseEntity.ok(carro);
-		} 
-		else {
+		} else {
 			return ResponseEntity.notFound().build();
 		}
 	}
-	
+
 	@GetMapping("/tipo/{tipo}")
 	public ResponseEntity getCarroByTipo(@PathVariable("tipo") String tipo) {
 		List<Carro> carros = service.getCarroByTipo(tipo);
-		
-		if(carros.isEmpty()) {
+
+		if (carros.isEmpty()) {
 			return ResponseEntity.noContent().build();
 		} else {
 			return ResponseEntity.ok(carros);
 		}
 	}
-	
+
 	@PostMapping
 	public ResponseEntity addCarro(@RequestBody Carro carro) {
-		
+
 		try {
 			service.addCarro(carro);
 			URI location = this.getUri(carro.getId());
@@ -71,9 +68,9 @@ public class CarroController {
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().build();
 		}
-		
+
 	}
-	
+
 	@PutMapping("/{id}")
 	public ResponseEntity editCarro(@PathVariable Long id, @RequestBody Carro carro) {
 		Carro c = service.editCarro(id, carro);
@@ -82,7 +79,7 @@ public class CarroController {
 		}
 		return ResponseEntity.ok(c);
 	}
-	
+
 	@DeleteMapping("/{id}")
 	public ResponseEntity deleteCarro(@PathVariable("id") Long id) {
 		boolean carroDeletado = service.deleteCarro(id);

@@ -6,10 +6,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter @Setter
+@Data
 @Entity(name = "carro")
 public class Carro {
 	
@@ -22,14 +21,5 @@ public class Carro {
 	
 	@Column(name = "tipo")
 	private String tipo;
-	
-	public Carro() {
-
-	}
-	
-	public Carro(Long id, String nome) {
-		this.id = id;
-		this.nome = nome;
-	}
 	
 }

@@ -1,8 +1,10 @@
 package com.example.carros.api;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.example.carros.domain.Carro;
+import com.example.carros.domain.dto.CarroDTO;
 import com.example.carros.service.CarroService;
 
 @RestController
@@ -33,7 +36,18 @@ public class CarroController {
 
 	@GetMapping
 	public ResponseEntity getCarros() {
-		return ResponseEntity.ok(service.getCarros());
+		List<Carro> carros = service.getCarros();
+
+		if (carros.isEmpty()) {
+			return ResponseEntity.noContent().build();
+		} else {
+			List<CarroDTO> carrosDTO = carros.stream().map(c -> new CarroDTO(c)).collect(Collectors.toList());
+			return ResponseEntity.ok(carrosDTO);
+//		List<CarroDTO> carrosDTO = new ArrayList<>();
+//		for (Carro c: carros) {
+//			carrosDTO.add(new CarroDTO(c));
+//		}
+		}
 	}
 
 	@GetMapping("/{id}")
@@ -41,7 +55,7 @@ public class CarroController {
 		Optional<Carro> carro = service.getCarroById(id);
 
 		if (carro.isPresent()) {
-			return ResponseEntity.ok(carro);
+			return ResponseEntity.ok(new CarroDTO(carro.get()));
 		} else {
 			return ResponseEntity.notFound().build();
 		}
@@ -54,7 +68,7 @@ public class CarroController {
 		if (carros.isEmpty()) {
 			return ResponseEntity.noContent().build();
 		} else {
-			return ResponseEntity.ok(carros);
+			return ResponseEntity.ok(carros.stream().map(c -> new CarroDTO(c)).collect(Collectors.toList()));
 		}
 	}
 

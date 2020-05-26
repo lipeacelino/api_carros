@@ -16,7 +16,7 @@ public class CarroService {
 	@Autowired
 	private CarroRepository repository;
 
-	public Iterable<Carro> getCarros() {
+	public List<Carro> getCarros() {
 		return repository.findAll();
 	}
 

@@ -41,7 +41,7 @@ public class CarroController {
 		if (carros.isEmpty()) {
 			return ResponseEntity.noContent().build();
 		} else {
-			List<CarroDTO> carrosDTO = carros.stream().map(c -> new CarroDTO(c)).collect(Collectors.toList());
+			List<CarroDTO> carrosDTO = carros.stream().map(c -> CarroDTO.create(c)).collect(Collectors.toList());
 			return ResponseEntity.ok(carrosDTO);
 //		List<CarroDTO> carrosDTO = new ArrayList<>();
 //		for (Carro c: carros) {
@@ -55,7 +55,7 @@ public class CarroController {
 		Optional<Carro> carro = service.getCarroById(id);
 
 		if (carro.isPresent()) {
-			return ResponseEntity.ok(new CarroDTO(carro.get()));
+			return ResponseEntity.ok(CarroDTO.create(carro.get()));
 		} else {
 			return ResponseEntity.notFound().build();
 		}
@@ -68,7 +68,7 @@ public class CarroController {
 		if (carros.isEmpty()) {
 			return ResponseEntity.noContent().build();
 		} else {
-			return ResponseEntity.ok(carros.stream().map(c -> new CarroDTO(c)).collect(Collectors.toList()));
+			return ResponseEntity.ok(carros.stream().map(c -> CarroDTO.create(c)).collect(Collectors.toList()));
 		}
 	}
 

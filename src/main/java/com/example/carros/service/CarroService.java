@@ -9,6 +9,7 @@ import org.springframework.util.Assert;
 
 import com.example.carros.domain.Carro;
 import com.example.carros.domain.CarroRepository;
+import com.example.carros.domain.dto.CarroDTO;
 
 @Service
 public class CarroService {
@@ -20,16 +21,13 @@ public class CarroService {
 		return repository.findAll();
 	}
 
-	public Optional<Carro> getCarroById(Long id) {
-		return repository.findById(id);
+	public Optional<CarroDTO> getCarroById(Long id) {
+		CarroDTO.create(repository.findById(id).get());
+		return repository.findById(id).map(c -> CarroDTO.create(c));
 	}
 
-	public boolean deleteCarro(Long id) {
-		if (getCarroById(id).isPresent()) {
+	public void deleteCarro(Long id) {
 			repository.deleteById(id);
-			return true;
-		}
-		return false;
 	}
 
 	public List<Carro> getCarroByTipo(String tipo) {

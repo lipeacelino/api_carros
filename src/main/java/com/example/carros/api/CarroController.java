@@ -52,10 +52,10 @@ public class CarroController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity getCarroById(@PathVariable("id") Long id) {
-		Optional<Carro> carro = service.getCarroById(id);
+		Optional<CarroDTO> carroDTO = service.getCarroById(id);
 
-		if (carro.isPresent()) {
-			return ResponseEntity.ok(CarroDTO.create(carro.get()));
+		if (carroDTO.isPresent()) {
+			return ResponseEntity.ok(carroDTO);
 		} else {
 			return ResponseEntity.notFound().build();
 		}
@@ -74,15 +74,9 @@ public class CarroController {
 
 	@PostMapping
 	public ResponseEntity addCarro(@RequestBody Carro carro) {
-
-		try {
-			service.addCarro(carro);
-			URI location = this.getUri(carro.getId());
-			return ResponseEntity.created(location).build();
-		} catch (Exception e) {
-			return ResponseEntity.badRequest().build();
-		}
-
+		service.addCarro(carro);
+		URI location = this.getUri(carro.getId());
+		return ResponseEntity.created(location).build();
 	}
 
 	@PutMapping("/{id}")
@@ -96,10 +90,7 @@ public class CarroController {
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity deleteCarro(@PathVariable("id") Long id) {
-		boolean carroDeletado = service.deleteCarro(id);
-		if (carroDeletado) {
-			return ResponseEntity.ok().build();
-		}
-		return ResponseEntity.notFound().build();
+		service.deleteCarro(id);
+		return ResponseEntity.ok().build();
 	}
 }

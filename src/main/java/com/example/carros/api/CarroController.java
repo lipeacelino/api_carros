@@ -54,11 +54,11 @@ public class CarroController {
 	public ResponseEntity getCarroById(@PathVariable("id") Long id) {
 		Optional<CarroDTO> carroDTO = service.getCarroById(id);
 
-		if (carroDTO.isPresent()) {
+		//if (carroDTO.isPresent()) {
 			return ResponseEntity.ok(carroDTO);
-		} else {
-			return ResponseEntity.notFound().build();
-		}
+//		} else {
+//			return ResponseEntity.notFound().build();
+//		}
 	}
 
 	@GetMapping("/tipo/{tipo}")
@@ -82,9 +82,10 @@ public class CarroController {
 	@PutMapping("/{id}")
 	public ResponseEntity editCarro(@PathVariable Long id, @RequestBody Carro carro) {
 		Carro c = service.editCarro(id, carro);
+		/*
 		if (c == null) {
 			return ResponseEntity.notFound().build();
-		}
+		}*/
 		return ResponseEntity.ok(c);
 	}
 

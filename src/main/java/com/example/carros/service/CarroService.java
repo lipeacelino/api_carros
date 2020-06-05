@@ -47,7 +47,7 @@ public class CarroService {
 		// busca de carro no banco de dados
 		Optional<Carro> carroOptional = repository.findById(id);
 
-		if (carroOptional.isPresent()) {
+		//if (carroOptional.isPresent()) {
 			Carro carroBd = carroOptional.get();
 
 			// copiando as propriedades para o carro do bd
@@ -56,9 +56,9 @@ public class CarroService {
 
 			// salvando carro atualizado no bd
 			return repository.save(carroBd);
-		} else {
+		}/* else {
 			return null;
-		}
+		}*/
 
 	}
-}
+//}
